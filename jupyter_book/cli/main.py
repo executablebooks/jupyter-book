@@ -452,7 +452,7 @@ def config():
     "--output-dir",
     default=None,
     help="Path to the output directory for resulting conf.py"
-         " (default: same folder as the yaml config file)",
+    " (default: same folder as the yaml config file)",
 )
 @click.pass_context
 def sphinx(ctx, path_source, config, toc, output_dir):
@@ -460,8 +460,7 @@ def sphinx(ctx, path_source, config, toc, output_dir):
     from jupyter_book.config import get_final_config
 
     path_config, full_path_source, config_overrides = ctx.invoke(
-        build, path_source=path_source, config=config, toc=toc,
-        get_config_only=True
+        build, path_source=path_source, config=config, toc=toc, get_config_only=True
     )
     sphinx_config, _ = get_final_config(
         user_yaml=Path(path_config) if path_config else None,
@@ -482,9 +481,12 @@ def sphinx(ctx, path_source, config, toc, output_dir):
     print(output_dir)
 
     out_folder = (
-        Path(output_dir).absolute() if output_dir
-        else Path(path_config).parent if path_config
-        else Path(full_path_source))
+        Path(output_dir).absolute()
+        if output_dir
+        else Path(path_config).parent
+        if path_config
+        else Path(full_path_source)
+    )
     out_folder.joinpath("conf.py").write_text(content, encoding="utf8")
     click.secho(f"Wrote conf.py to {out_folder}", fg="green")
 
