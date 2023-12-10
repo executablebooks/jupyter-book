@@ -29,7 +29,7 @@ dynamic = ["description", "version"]
 requires-python = ">=3.7"
 dependencies = [
     "click>=7.1,<9",
-    "docutils>=0.15,<0.19", # report issue for >=0.18,<0.20 until https://github.com/mcmtroffaes/sphinxcontrib-bibtex/issues/322 is fixed
+    "docutils>=0.15,<0.21", # report issue for >=0.18,<0.20 until https://github.com/mcmtroffaes/sphinxcontrib-bibtex/issues/322 is fixed
     "Jinja2",
     "jsonschema<5",
     "linkify-it-py~=2.0.0",
