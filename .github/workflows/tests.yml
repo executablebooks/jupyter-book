@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: 3.9
-    - uses: pre-commit/action@v3.0.0
+    - uses: pre-commit/action@v3.0.1
 
   # for speed, we run a test matrix against only the tests that do not require TeX,
   # then test-with-cov for all tests, for a single environment
