@@ -322,3 +322,66 @@ def test_toc_numbered(
         basename=toc_file.split(".")[0],
         extension=f"{SPHINX_VERSION}.html",
     )
+
+
+def test_only(pages, cli):
+    """Test {only} content is not built."""
+    page = pages.joinpath("single_page.ipynb")
+    html = pages.joinpath("_build", "_page", "single_page", "html")
+    result = cli.invoke(commands.build, [page.as_posix(), "-n", "-W", "--keep-going"])
+    assert result.output
+    assert html.joinpath("single_page.html").exists()
+    outpage = html.joinpath("single_page.html")
+    assert not html.joinpath("extra_page.html").exists()
+    assert "slickers" not in outpage.read_text(encoding="utf8")
+    assert "cowgirls" not in outpage.read_text(encoding="utf8")
+
+
+def test_only_tag(pages, cli, build_resources):
+    """Test tag cli builds {only} content."""
+    books, _ = build_resources
+    path_c = books.joinpath("config", "_config_onetag.yml")
+    page = pages.joinpath("single_page.ipynb")
+    html = pages.joinpath("_build", "_page", "single_page", "html")
+    result = cli.invoke(
+        commands.build,
+        [
+            page.as_posix(),
+            "--config",
+            path_c.as_posix(),
+            "-n",
+            "-W",
+            "--keep-going",
+        ],
+    )
+    assert result.output
+    assert html.joinpath("single_page.html").exists()
+    outpage = html.joinpath("single_page.html")
+    assert not html.joinpath("extra_page.html").exists()
+    assert "slickers" in outpage.read_text(encoding="utf8")
+    assert "cowgirls" not in outpage.read_text(encoding="utf8")
+
+
+def test_both_tags(pages, cli, build_resources):
+    """Test multiple tag creates boolean condition."""
+    books, _ = build_resources
+    path_c = books.joinpath("config", "_config_twotag.yml")
+    page = pages.joinpath("single_page.ipynb")
+    html = pages.joinpath("_build", "_page", "single_page", "html")
+    result = cli.invoke(
+        commands.build,
+        [
+            page.as_posix(),
+            "--config",
+            path_c.as_posix(),
+            "-n",
+            "-W",
+            "--keep-going",
+        ],
+    )
+    assert result.output
+    assert html.joinpath("single_page.html").exists()
+    outpage = html.joinpath("single_page.html")
+    assert not html.joinpath("extra_page.html").exists()
+    assert "slickers" in outpage.read_text(encoding="utf8")
+    assert "cowgirls" in outpage.read_text(encoding="utf8")

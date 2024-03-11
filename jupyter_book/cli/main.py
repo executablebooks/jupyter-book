@@ -462,7 +462,7 @@ def sphinx(ctx, path_source, config, toc):
     path_config, full_path_source, config_overrides = ctx.invoke(
         build, path_source=path_source, config=config, toc=toc, get_config_only=True
     )
-    sphinx_config, _ = get_final_config(
+    sphinx_config, _, tags_config = get_final_config(
         user_yaml=Path(path_config) if path_config else None,
         sourcedir=Path(full_path_source),
         cli_config=config_overrides,
@@ -474,8 +474,21 @@ def sphinx(ctx, path_source, config, toc):
         "# re-generate this one.",
         "###############################################################################",
     ]
+
     for key in sorted(sphinx_config):
         lines.append(f"{key} = {sphinx_config[key]!r}")
+
+    # sphinx syntax is different for tags
+    tags_add = tags_config.get("tags_add", None)
+    if tags_add:
+        for tag in tags_add:
+            lines.append(f"tags.add('{tag}')")
+
+    tags_remove = tags_config.get("tags_remove", None)
+    if tags_remove:
+        for tag in tags_remove:
+            lines.append(f"tags.remove('{tag}')")
+
     content = "\n".join(lines).rstrip() + "\n"
 
     out_folder = Path(path_config).parent if path_config else Path(full_path_source)
