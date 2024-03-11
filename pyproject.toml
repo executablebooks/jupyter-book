@@ -41,7 +41,7 @@ dependencies = [
     "sphinx-external-toc>=1.0.1,<2",
     "sphinx-jupyterbook-latex>=1,<2",
     "sphinx-design>=0.5,<1",
-    "sphinx-thebe>=0.3,<1",
+    "sphinx-thebe>=0.3.1,<1",
     "sphinx-book-theme>=1.1.0,<2",
     "sphinx_togglebutton",
     "sphinxcontrib-bibtex>=2.5.0,<3",
