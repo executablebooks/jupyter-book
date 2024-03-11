@@ -38,7 +38,7 @@ jobs:
     - name: Build PDF from HTML (Docs)
       run: |
         jb build docs --builder pdfhtml -n -W --keep-going
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: PDF_HTML
         path: docs/_build/pdf/book.pdf
@@ -77,7 +77,7 @@ jobs:
     - name: Build PDF from LaTeX (Docs)
       run: |
         jb build docs --builder pdflatex -n -W --keep-going
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: PDF_LATEX
         path: docs/_build/latex/book.pdf
