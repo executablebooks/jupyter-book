@@ -30,7 +30,7 @@ The rules should then automatically be applied to your site. In general, these
 CSS and JS files will be loaded *after* others are loaded on your page, so they
 should overwrite pre-existing rules and behaviour.
 
-### An example: justify the text
+### An Example: justify the text
 
 If you want the text of your book to be justified instead of left aligned then create `myfile.css` under `mybook/_static` with the following CSS:
 
@@ -106,6 +106,38 @@ An "extra credit" exercise is presented here.
 ````
 
 In both cases the admonitions should be styled according to your CSS rules when you build your book.
+
+### An Example: add structured data for site name and search path
+
+For HTML builds, structured data allows machines to better understand the content of your pages.
+For instance Google Search can use structured data to understand your overall site's name, provide a search box that directly searches into your site, provide interactive experiences for flash cards or quizzes, etc.: see [Structured data markup that Google Search supports](https://developers.google.com/search/docs/appearance/structured-data/search-gallery).
+
+You can easily provide structured data for your site's name using the [JSON for Linking Data (JSON-LD)](https://json-ld.org/) format and a few lines of Javascript to inject the JSON-LD data into your page. These can be directly added as a single file in the `_static` directory, as described in [](#custom-assets). For instance, you could name the file `structured_data.js`. Here is an example showing the site name and search path information for jupyterbook.org:
+
+```javascript
+var structuredData = {
+"@context" : "https://schema.org",
+"@type" : "WebSite",
+"name" : "jupyter{book}",
+"alternateName" : "JB",
+"url" : "https://jupyterbook.org/",
+"potentialAction": {
+"@type": "SearchAction",
+"target": {
+  "@type": "EntryPoint",
+  "urlTemplate": "https://jupyterbook.org/en/stable/search.html?q={search_term_string}"
+},
+"query-input": "required name=search_term_string"
+}
+};
+
+const SDscript = document.createElement('script');
+SDscript.setAttribute('type', 'application/ld+json');
+SDscript.textContent = JSON.stringify(structuredData);
+document.head.appendChild(SDscript);
+```
+
+To use this script for your own site, modify the `name`, `alternateName`, `url`, and `urlTemplate` based on your JupyterBook configuration. For the `urlTemplate`, it is easiest to conduct a search on your site and then extract the search path from the URL of the returned results.
 
 ## Enable Google Analytics
 
