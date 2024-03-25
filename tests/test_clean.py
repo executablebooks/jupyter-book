@@ -1,4 +1,5 @@
 """Testing clean functionality of the CLI."""
+
 import os
 
 from click.testing import CliRunner

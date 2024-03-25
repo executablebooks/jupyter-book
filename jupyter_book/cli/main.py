@@ -2,6 +2,7 @@
 
 IMPORTANT: Top-level imports should be minimised here, to improve CLI responsiveness
 """
+
 import os
 import os.path as op
 import shutil as sh

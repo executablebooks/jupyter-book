@@ -1,4 +1,5 @@
 """A small sphinx extension to let you configure a site with YAML metadata."""
+
 import json
 import sys
 from functools import lru_cache
