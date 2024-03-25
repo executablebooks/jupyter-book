@@ -12,7 +12,7 @@ exclude: >
 repos:
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
     - id: check-json
     - id: check-yaml
@@ -37,7 +37,7 @@ repos:
       entry: python scripts/check_doc_requirements.py
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.4
+    rev: v0.3.4
     hooks:
     - id: ruff
       args: ["--fix", "--show-fixes"]
