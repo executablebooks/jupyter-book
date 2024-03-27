@@ -43,6 +43,7 @@ launch_buttons:
   notebook_interface: "classic" # The interface interactive links will activate ["classic", "jupyterlab"]
   binderhub_url: "https://mybinder.org"
   colab_url: "https://colab.research.google.com"
+  deepnote_url: "https://deepnote.com"
   thebe: true
 
 parse:

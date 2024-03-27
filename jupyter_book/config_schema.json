@@ -186,6 +186,9 @@
                 },
                 "colab_url": {
                     "type": "string"
+                },
+                "deepnote_url": {
+                    "type": "string"
                 }
             }
         },
