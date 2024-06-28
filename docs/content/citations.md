@@ -92,6 +92,41 @@ A common fix is to add a filter to the bibliography directives:
 
 See `sphinxcontrib-bibtex` documentation on [local bibliographies](https://sphinxcontrib-bibtex.readthedocs.io/en/latest/usage.html#section-local-bibliographies).
 
+### Citing a work in different documents
+When you want cite a document in several documents then the Sphinx `keyprefix` system should be used.
+
+As an example, suppose you wish to cite `Orwell1984` in two documents and have the bibliography entries showing in both documents. In one document you could use:
+
+````md
+..."If you want to keep a secret, you must also hide it from yourself"{cite}`a-Orwell1984`
+````
+
+with the following bibliography section code:
+
+````md
+```{bibliography}
+:filter: docname in docnames
+:labelprefix: A
+:keyprefix: a-
+```
+````
+In the second document you could use:
+
+````md
+..."Freedom is slavery."{cite}`b-Orwell1984`
+
+
+...
+
+```{bibliography}
+:filter: docname in docnames
+:labelprefix: B
+:keyprefix: b-
+```
+````
+
+See `sphinxcontrib-bibtex` documentation on [Key Prefixing](https://sphinxcontrib-bibtex.readthedocs.io/en/latest/usage.html#section-key-prefixing).
+
 (citations/bibliography)=
 ## Example Bibliography
 
