@@ -139,6 +139,11 @@ BUILDER_OPTS = {
     default=False,
     help="[pdflatex] Enable build of PDF files for each individual page",
 )
+@click.option(
+    "--jobs",
+    default=1,
+    help="Parallel build using multiple jobs",
+)
 def build(
     path_source,
     path_output,
@@ -153,6 +158,7 @@ def build(
     verbose,
     quiet,
     individualpages,
+    jobs,
     get_config_only=False,
 ):
     """Convert your book's or page's content to HTML or a PDF."""
@@ -312,6 +318,7 @@ def build(
         verbosity=verbose,
         quiet=quiet > 0,
         really_quiet=quiet > 1,
+        jobs=jobs,
     )
 
     builder_specific_actions(
