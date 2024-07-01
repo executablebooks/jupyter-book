@@ -50,7 +50,7 @@ def build_sphinx(
     """
     #######################
     # Configuration creation
-    sphinx_config, config_meta = get_final_config(
+    sphinx_config, config_meta, tags_config = get_final_config(
         user_yaml=Path(path_config) if path_config else None,
         cli_config=confoverrides or {},
         sourcedir=Path(sourcedir),
@@ -164,6 +164,20 @@ def build_sphinx(
                 latex_documents = autobuild_singlepage_latexdocs(app)
                 app.config.latex_documents = latex_documents
 
+            # add or remove tags here because Sphinx executes conf.py
+            # but conf.py not available to when initializing app
+
+            tags_add = tags_config.get("tags_add", None)
+            if tags_add:
+                for tag in tags_add:
+                    app.tags.tags[tag] = True
+
+            tags_remove = tags_config.get("tags_remove", None)
+            if tags_remove:
+                for tag in tags_remove:
+                    app.tags.tags.pop(tag, None)
+
+            # build the book
             app.build(force_all, filenames)
 
             return app.statuscode

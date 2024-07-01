@@ -1,0 +1,4 @@
+sphinx:
+  config:
+    tags_remove: 'rustler'
+    tags_add: ['cowboy', 'cowgirl']

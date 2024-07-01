@@ -109,7 +109,7 @@ def get_final_config(
     sphinx_config = get_default_sphinx_config()
 
     # get the default yaml configuration
-    yaml_config, default_yaml_update, add_paths = yaml_to_sphinx(
+    yaml_config, default_yaml_update, add_paths, tags_config = yaml_to_sphinx(
         yaml.safe_load(PATH_YAML_DEFAULT.read_text(encoding="utf8"))
     )
     yaml_config.update(default_yaml_update)
@@ -117,6 +117,7 @@ def get_final_config(
     # if available, get the user defined configuration
     user_yaml_recurse, user_yaml_update = {}, {}
     user_yaml_path = None
+    tags_user = {}
     if user_yaml:
         if isinstance(user_yaml, Path):
             user_yaml_path = user_yaml
@@ -126,7 +127,9 @@ def get_final_config(
         if validate:
             validate_yaml(user_yaml, raise_on_errors=raise_on_invalid)
 
-        user_yaml_recurse, user_yaml_update, add_paths = yaml_to_sphinx(user_yaml)
+        user_yaml_recurse, user_yaml_update, add_paths, tags_user = yaml_to_sphinx(
+            user_yaml
+        )
 
     # add paths from yaml config
     if user_yaml_path:
@@ -171,8 +174,12 @@ def get_final_config(
     # otherwise forcefully override options non-recursively
     if sphinx_config.pop("recursive_update") is True:
         _recursive_update(sphinx_config, user_yaml_update)
+        if tags_user:
+            _recursive_update(tags_config, tags_user, list_extend=True)
     else:
         sphinx_config.update(user_yaml_update)
+        if tags_user:
+            tags_config.update(tags_user)
 
     # This is to deal with a special case, where the override needs to be applied after
     # the sphinx app is initialised (since the default is a function)
@@ -237,17 +244,19 @@ def get_final_config(
         sphinx_config.pop("external_toc_path", None)
         sphinx_config.pop("external_toc_exclude_missing", None)
 
-    return sphinx_config, config_meta
+    return sphinx_config, config_meta, tags_config
 
 
 def yaml_to_sphinx(yaml: dict):
     """Convert a Jupyter Book style config structure into a Sphinx config dict.
 
-    :returns: (recursive_updates, override_updates, add_paths)
+    :returns: (recursive_updates, override_updates, add_paths, tags_config)
 
     add_paths collects paths that are specified in the _config.yml (such as those
     provided in local_extensions) and returns them for adding to sys.path in
     a context where the _config.yml path is known
+
+    tags_config returns a dict of tags to add or remove when building
     """
     sphinx_config = {}
 
@@ -424,6 +433,23 @@ def yaml_to_sphinx(yaml: dict):
             if path not in sys.path:
                 add_paths.append(path)
 
+    # Remove "tag" entries - Jupyter Book specific config options
+    # to substitute: Sphinx executes tags.add(), tags.remove() from conf.py
+    tags_config = {}
+    if yaml.get("sphinx", {}).get("config", {}):
+        tags_add = yaml.get("sphinx", {}).get("config", {}).pop("tags_add", None)
+        tags_remove = yaml.get("sphinx", {}).get("config", {}).pop("tags_remove", None)
+
+        if tags_add:
+            if not isinstance(tags_add, list):
+                tags_add = [tags_add]
+
+        if tags_remove:
+            if not isinstance(tags_remove, list):
+                tags_remove = [tags_remove]
+
+        tags_config = {"tags_add": tags_add, "tags_remove": tags_remove}
+
     # Overwrite sphinx config or not
     if "recursive_update" in yaml.get("sphinx", {}):
         sphinx_config["recursive_update"] = yaml.get("sphinx", {}).get(
@@ -459,7 +485,12 @@ def yaml_to_sphinx(yaml: dict):
 
     # items in sphinx.config will override defaults,
     # rather than recursively updating them
-    return sphinx_config, yaml.get("sphinx", {}).get("config") or {}, add_paths
+    return (
+        sphinx_config,
+        yaml.get("sphinx", {}).get("config") or {},
+        add_paths,
+        tags_config,
+    )
 
 
 def _recursive_update(config, update, list_extend=False):

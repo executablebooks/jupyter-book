@@ -14,16 +14,19 @@ kernelspec:
 It's possible to control which content shows up in your book. For example,
 you may want to display a complex visualization to illustrate an idea, but don't
 want the page to be cluttered with a large code cell that generated the visualization.
-In other cases, you may want to remove a code cell entirely.
+In other cases, you may want to show content only for some destinations or circumstances
+or remove a code cell entirely.
 
-In this case, you have two options:
+In this case, you have three options:
 
+* **Tagging** content allows selective building of markdown through configuration.
 * **Hiding** content provides a button that lets readers reveal the content.
 * **Removing** content prevents it from making it into your book. It
   will be entirely gone (though still present in the source files)
 
-There are two ways to hide content:
+There are three ways to manage content:
 
+* To tag Markdown, use the `{only}` directive and the `tags_add` configuration key.
 * To hide Markdown, use the `{toggle}` directive.
 * To hide or remove code cells or their outputs, use **notebook cell tags**.
 
@@ -32,6 +35,46 @@ We'll cover each alternative below.
 :::{seealso}
 [](jupyter-cell-tags)
 :::
+
+## The `{only}` directive
+
+To include Markdown content only for some build outputs or intended audiences,
+tag the content with the `{only}` directive followed by a tag name,
+and define the tag within the `_config.yml` Sphinx configuration.
+
+The section of a Markdown cell or document intended for teachers is tagged like so:
+
+````md
+```{only} teacher
+Answer key:
+
+  1. Giraffe
+  2. Platypus
+
+```
+````
+
+Conditional content is excluded by default when the *tag* is undefined.
+To publish the teachers' edition, create a version of the `_config.yml` that
+defines the `teacher` tag using `tags_add` in the Sphinx configuration.
+
+```yaml
+sphinx:
+  config        : # key-value pairs to over-ride the Sphinx configuration
+    tags_add    : teacher    # this line only in _config_teacher.yaml
+```
+
+A *tag* may be used to publish content for selected builders. For example, content
+tagged with `latex` will be published only when using `builder=latex` and will not
+be published when using `builder=html`.
+
+```{note}
+Because `jupyter-book` builds PDF from HTML or LaTeX, use `html` or `latex` as tags
+for conditional content with using the `pdfhtml` or `pdflatex` `<builder-name>`.
+```
+
+See [Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#including-content-based-on-tags)
+for more information about the `{only}` directive and tag-based content.
 
 ## Hide Markdown using MyST Markdown
 

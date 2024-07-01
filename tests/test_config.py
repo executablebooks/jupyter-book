@@ -73,7 +73,7 @@ SPHINX_VERSION = f".sphinx{sphinx_build.version_info[0]}"
 )
 def test_get_final_config(user_config, data_regression):
     cli_config = {"latex_individualpages": False}
-    final_config, metadata = get_final_config(
+    final_config, metadata, _ = get_final_config(
         user_yaml=user_config,
         cli_config=cli_config,
         validate=True,
@@ -120,6 +120,19 @@ def test_config_sphinx_command(cli, temp_with_override, file_regression):
     file_regression.check(output, encoding="utf8")
 
 
+def test_tags_sphinx_command(cli, build_resources):
+    books, _ = build_resources
+    path_b = books.joinpath("config")
+    path_c = path_b.joinpath("_config_twotag.yml")
+    result = cli.invoke(sphinx, arg=[path_b.as_posix(), path_c.as_posix()])
+    assert result
+    assert path_b.joinpath("conf.py").exists()
+    output = path_b.joinpath("conf.py").read_text(encoding="utf8")
+    assert "tags.add('cowboy')" in output
+    assert "tags.add('cowgirl')" in output
+    assert "tags.remove('rustler')" in output
+
+
 # TODO sphinx-external-toc now handles appending to exclude_patterns
 # but we may want to add similar tests there, checking the output of exclude_patterns
 
@@ -135,7 +148,7 @@ def test_config_sphinx_command(cli, temp_with_override, file_regression):
 #     Path("exclude.md").write_text("")
 #     user_config = {"only_build_toc_files": True}
 
-#     final_config, metadata = get_final_config(
+#     final_config, metadata, _ = get_final_config(
 #         user_yaml=user_config,
 #         cli_config=cli_config,
 #         validate=True,
@@ -157,7 +170,7 @@ def test_config_sphinx_command(cli, temp_with_override, file_regression):
 #         "exclude_patterns": ["my/*", "patterns"],
 #     }
 
-#     final_config, metadata = get_final_config(
+#     final_config, metadata, _ = get_final_config(
 #         user_yaml=user_config,
 #         cli_config=cli_config,
 #         validate=True,
@@ -182,7 +195,7 @@ def test_config_sphinx_command(cli, temp_with_override, file_regression):
 #     Path(subdir / "sub.md").write_text("")
 #     user_config = {"only_build_toc_files": True}
 
-#     final_config, metadata = get_final_config(
+#     final_config, metadata, _ = get_final_config(
 #         user_yaml=user_config,
 #         cli_config=cli_config,
 #         validate=True,
@@ -211,7 +224,7 @@ def test_config_sphinx_command(cli, temp_with_override, file_regression):
 def test_get_final_config_custom_myst_extensions(data_regression):
     cli_config = {"latex_individualpages": False}
     user_config = {"parse": {"myst_extra_extensions": ["linkify"]}}
-    final_config, metadata = get_final_config(
+    final_config, metadata, _ = get_final_config(
         user_yaml=user_config,
         cli_config=cli_config,
         validate=True,
@@ -225,7 +238,7 @@ def test_get_final_config_custom_myst_extensions(data_regression):
 def test_get_final_config_bibtex(data_regression):
     cli_config = {"latex_individualpages": False}
     user_config = {"bibtex_bibfiles": ["tmp.bib"]}
-    final_config, metadata = get_final_config(
+    final_config, metadata, _ = get_final_config(
         user_yaml=user_config,
         cli_config=cli_config,
         validate=True,
@@ -244,7 +257,7 @@ def test_mathjax_config_warning(data_regression):
     }
     cli_config = {"latex_individualpages": False}
     user_config = mathjax_config
-    final_config, metadata = get_final_config(
+    final_config, metadata, _ = get_final_config(
         user_yaml=user_config,
         cli_config=cli_config,
         validate=True,
@@ -268,7 +281,7 @@ def test_mathjax_config_warning_mathjax2path(data_regression):
 
     cli_config = {"latex_individualpages": False}
     user_config = mathjax_config
-    final_config, metadata = get_final_config(
+    final_config, metadata, _ = get_final_config(
         user_yaml=user_config,
         cli_config=cli_config,
         validate=True,
