@@ -454,8 +454,14 @@ def config():
     default=None,
     help="Path to the Table of Contents YAML file (default: PATH_SOURCE/_toc.yml)",
 )
+@click.option(
+    "--output-dir",
+    default=None,
+    help="Path to the output directory for resulting conf.py"
+    " (default: same folder as the yaml config file)",
+)
 @click.pass_context
-def sphinx(ctx, path_source, config, toc):
+def sphinx(ctx, path_source, config, toc, output_dir):
     """Generate a Sphinx conf.py representation of the build configuration."""
     from jupyter_book.config import get_final_config
 
@@ -478,7 +484,15 @@ def sphinx(ctx, path_source, config, toc):
         lines.append(f"{key} = {sphinx_config[key]!r}")
     content = "\n".join(lines).rstrip() + "\n"
 
-    out_folder = Path(path_config).parent if path_config else Path(full_path_source)
+    print(output_dir)
+
+    out_folder = (
+        Path(output_dir).absolute()
+        if output_dir
+        else Path(path_config).parent
+        if path_config
+        else Path(full_path_source)
+    )
     out_folder.joinpath("conf.py").write_text(content, encoding="utf8")
     click.secho(f"Wrote conf.py to {out_folder}", fg="green")
 
