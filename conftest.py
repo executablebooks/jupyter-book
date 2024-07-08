@@ -3,6 +3,7 @@ and so relative path computations fail.
 Therefore, here we allow for the directory to be directly supplied,
 via an environmental variable.
 """
+
 import shutil
 from pathlib import Path
 from uuid import uuid4

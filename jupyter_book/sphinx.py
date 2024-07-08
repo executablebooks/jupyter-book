@@ -1,4 +1,5 @@
 """Tools for interacting with Sphinx."""
+
 import os.path as op
 import sys
 from pathlib import Path

@@ -1,4 +1,5 @@
 """Plugin aware click command Group."""
+
 from typing import Any, Iterable, List, Set
 
 import click
