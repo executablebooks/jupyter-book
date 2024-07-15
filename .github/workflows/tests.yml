@@ -75,7 +75,7 @@ jobs:
     # TEMPORARY FIX: Disable codecov until we can get it working again
     - name: Upload to Codecov
       if: (github.repository == 'executablebooks/jupyter-book') && false
-      uses: codecov/codecov-action@v3.1.4
+      uses: codecov/codecov-action@v4.5.0
       with:
         name: ebp-jupyter-book-pytests-py3.9
         flags: pytests
